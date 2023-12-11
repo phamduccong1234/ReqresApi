@@ -68,6 +68,8 @@ public class JsonUtils {
 			jsonObject.put(fieldName, true);
 		} else if (value.equals("\"\"" )) {
 			jsonObject.put(fieldName, "");
+		} else if (isNumeric(value)) {
+			jsonObject.put(fieldName, Double.parseDouble(value));
 		}
 		else {
 		jsonObject.put(fieldName, value);
@@ -94,6 +96,33 @@ public class JsonUtils {
 		}
 		
 		return fileContent;
+	}
+	
+	public static boolean isNumeric(String strNum) {
+	    if (strNum == null) {
+	        return false;
+	    }
+	    try {
+	        double d = Double.parseDouble(strNum);
+	    } catch (NumberFormatException nfe) {
+	        return false;
+	    }
+	    return true;
+	}
+	
+	public String createRequestBody(String jsonBodySourceFilePath, String fieldName, String value) {
+		String requestBody = "";
+		// Sua data tren file moi
+		File sourceFile = new File(jsonBodySourceFilePath);
+		String requestBodyName = sourceFile.getName();
+
+		String jsonBodyDictinationFilePath = System.getProperty("user.dir") + "\\src\\main\\resources\\" + requestBodyName.replace(".json", "Copy.json");
+		File dictinationFile = new File(jsonBodyDictinationFilePath);
+		copyJsonFile(sourceFile, dictinationFile);
+
+		// Lay request body theo file moi
+		requestBody = changeValueByFieldName(dictinationFile, fieldName, value);
+		return requestBody;
 	}
 	
 }
