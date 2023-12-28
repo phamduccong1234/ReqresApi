@@ -19,7 +19,7 @@ public class ListUserSteps {
 	public ListUserSteps(TestContext context) {
 		testContext = context;
 	}
-	@Given("I have {string} and Method")
+//	@Given("I have {string} and Method")
 	public void i_have_url_and_method(String givenUrl) {
 		System.out.println("url" + givenUrl);
 	    url = givenUrl;
@@ -34,10 +34,10 @@ public class ListUserSteps {
 	   testContext.scenarioContext.setContext(Context.responseBody, response);
 	}
 
-	@Then("I check {int} correctly")
-	public void i_check_status_code_and_page_number_correctly(int expectedStatusCode) {
-	    assertEquals(response.statusCode(), expectedStatusCode);
-	}
+//	@Then("I check {int} correctly")
+//	public void i_check_status_code_and_page_number_correctly(int expectedStatusCode) {
+//	    assertEquals(response.statusCode(), expectedStatusCode);
+//	}
 	
 	@Then("I check page number correctly")
 	public void i_check_page_number_correctly() {

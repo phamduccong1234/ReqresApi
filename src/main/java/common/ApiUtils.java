@@ -37,7 +37,7 @@ public class ApiUtils {
 		  HttpRequest request = HttpRequest.newBuilder()
 				  .uri(new URI(url))
 				  .header("Content-Type", "application/json")
-				  .header("x-api-key", "DEMO-API-KEY")
+//				  .header("x-api-key", "DEMO-API-KEY")
 				  .POST(HttpRequest.BodyPublishers.ofString(jsonRequestBody))//pass request body
 				  .build();
 		  

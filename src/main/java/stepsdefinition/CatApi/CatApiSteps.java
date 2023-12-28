@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.Map;
 
 import common.ApiUtils;
+import common.Context;
 import common.JsonUtils;
+import common.TestContext;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -19,9 +21,14 @@ public class CatApiSteps {
 	JsonUtils jsonUtils = new JsonUtils();
 	ApiUtils apiUtils = new ApiUtils();
 	HttpResponse<String> response;
+	TestContext testContext;
 
-	@Given("I have url and Method and request body of cat api")
-	public void i_have_and_method_and_request_body_of_cat_api(DataTable catTable) {
+	public CatApiSteps(TestContext context) {
+		testContext = context;
+	}
+
+	@Given("I have url and Method and request body")
+	public void i_have_and_method_and_request_body(DataTable catTable) {
 		// Lay ten file request body va url
 		List<Map<String, String>> list = catTable.asMaps(String.class, String.class);
 		String requestBodyName = "";
@@ -30,27 +37,28 @@ public class CatApiSteps {
 			requestBodyName = m.get("RequestBodyName");
 		}
 
-		requestBodyFilePath = System.getProperty("user.dir") + "\\src\\main\\resources\\" + requestBodyName;
-
+		if(requestBodyName == null || requestBodyName.isEmpty() || requestBodyName.isBlank()) {
+			System.out.println("Empty");
+		}else {
+			requestBodyFilePath = System.getProperty("user.dir") + "\\src\\main\\resources\\" + requestBodyName;
+		}
 	}
-
-//	@Given("I have {string} and Method and {string} of cat api")
-//	public void i_have_and_method_and_of_cat_api(String givenUrl, String givenRequestBodyName) {
-//		url = givenUrl;
-//		String filePath = System.getProperty("user.dir") + "\\src\\main\\resources" + givenRequestBodyName;
-//		JsonUtils jsonUtils = new JsonUtils();
-//		requestBody = jsonUtils.readJsonFile(filePath);
-//	}
 
 	// For Successfully Case
-	@When("I send cat request")
-	public void i_send_cat_request() {
-		String requestBody = jsonUtils.readJsonFile(requestBodyFilePath);
-		response = apiUtils.sendPostRequest(url, requestBody);
+	@When("I send request")
+	public void i_send_request() {
+		if(requestBodyFilePath == null || requestBodyFilePath.isEmpty() || requestBodyFilePath.isBlank()) {
+			response = apiUtils.sendGetRequest(url);
+		}else {
+			String requestBody = jsonUtils.readJsonFile(requestBodyFilePath);
+			response = apiUtils.sendPostRequest(url, requestBody);
+			System.out.println("ccccc" + response.body());
+			testContext.scenarioContext.setContext(Context.responseBody, response.body());
+		}
 	}
 
-	@Then("I check {int} of cat api correctly")
-	public void i_check_of_cat_api_correctly(int expectedStatusCode) {
+	@Then("I check {int} correctly")
+	public void i_check_correctly(int expectedStatusCode) {
 		assertEquals(response.statusCode(), expectedStatusCode);
 	}
 
